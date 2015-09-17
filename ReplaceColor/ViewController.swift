@@ -73,7 +73,6 @@ class ViewController: UIViewController {
         var v : CGFloat = 0
         let col = UIColor(red: CGFloat(r), green: CGFloat(g), blue: CGFloat(b), alpha: 1.0)
         col.getHue(&h, saturation: &s, brightness: &v, alpha: nil)
-        h = fmod(h, 1.0)
         return (Float(h), Float(s), Float(v))
     }
     
