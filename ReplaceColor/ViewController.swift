@@ -14,7 +14,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var slider: UISlider!
     @IBOutlet weak var switchWhite: UISwitch!
     var ciImage: CIImage?
-    var isWhite = false
+    var isMono = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -117,7 +117,7 @@ class ViewController: UIViewController {
         let minHueAngle: Float = (214.0 - 60.0/2.0) / 360 //60 degree range = +30 -30
         let maxHueAngle: Float = (214.0 + 60.0/2.0) / 360
         var hueAdjustment = centerHueAngle - destCenterHueAngle
-        if destCenterHueAngle == 0 {
+        if destCenterHueAngle == 0 && !isMono {
             hueAdjustment = 1 //force black if slider angle is 0
         }
         let size = 64
@@ -133,27 +133,23 @@ class ViewController: UIViewController {
                 for var x = 0; x < size; x++ {
                     rgb[0] = Float(x) / Float(size) // red value
                     hsv = RGBtoHSV(rgb[0], g: rgb[1], b: rgb[2])
-                    if isWhite {
-                        let alpha: Float = (hsv.h > minHueAngle && hsv.h < maxHueAngle) ? 0.2 : 1.0
-                        cubeData[offset]   = rgb[0] * alpha
-                        cubeData[offset+1] = rgb[1] * alpha
-                        cubeData[offset+2] = rgb[2] * alpha
-                        cubeData[offset+3] = alpha
+                    if hsv.h < minHueAngle || hsv.h > maxHueAngle {
+                        newRGB.r = rgb[0]
+                        newRGB.g = rgb[1]
+                        newRGB.b = rgb[2]
                     } else {
-                        //print("RGB \(rgb[0]) \(rgb[1]) \(rgb[2]) HSV \(hsv.h) \(hsv.s) \(hsv.v)")
-                        if hsv.h < minHueAngle || hsv.h > maxHueAngle {
-                            newRGB.r = rgb[0]
-                            newRGB.g = rgb[1]
-                            newRGB.b = rgb[2]
+                        if isMono {
+                            hsv.s = 0
+                            hsv.v = hsv.v - hueAdjustment
                         } else {
                             hsv.h = destCenterHueAngle == 1 ? 0 : hsv.h - hueAdjustment //force red if slider angle is 360
-                            newRGB = HSVtoRGB(hsv.h, s:hsv.s, v:hsv.v)
                         }
-                        cubeData[offset]   = newRGB.r
-                        cubeData[offset+1] = newRGB.g
-                        cubeData[offset+2] = newRGB.b
-                        cubeData[offset+3] = 1.0
+                        newRGB = HSVtoRGB(hsv.h, s:hsv.s, v:hsv.v)
                     }
+                    cubeData[offset] = newRGB.r
+                    cubeData[offset+1] = newRGB.g
+                    cubeData[offset+2] = newRGB.b
+                    cubeData[offset+3] = 1.0
                     offset += 4
                 }
             }
@@ -171,8 +167,8 @@ class ViewController: UIViewController {
     }
     
     @IBAction func switchChanged(sender: AnyObject) {
-        switchWhite.on = !isWhite
-        isWhite = !isWhite
+        isMono = !isMono
+        switchWhite.on = isMono
         render()
     }
 
