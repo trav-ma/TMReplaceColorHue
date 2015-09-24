@@ -38,10 +38,6 @@
                                 <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFill" image="ColorBar" id="0Eq-Tl-Pb2">
-                                <rect key="frame" x="14" y="300" width="297" height="57"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                            </imageView>
                             <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" id="pZe-bL-Kyl">
                                 <rect key="frame" x="251" y="237" width="51" height="31"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -49,13 +45,17 @@
                                     <action selector="switchChanged:" destination="vXZ-lx-hvc" eventType="valueChanged" id="kia-L1-sgm"/>
                                 </connections>
                             </switch>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Monochrome" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="AWD-Hf-7ro">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Grayscale" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="AWD-Hf-7ro">
                                 <rect key="frame" x="157" y="247" width="86" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFit" image="hueScale" id="0Eq-Tl-Pb2">
+                                <rect key="frame" x="20" y="307" width="280" height="32"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
@@ -63,6 +63,7 @@
                     <nil key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="imageView" destination="QSN-KV-POl" id="hF5-lJ-3or"/>
+                        <outlet property="imageViewColorBar" destination="0Eq-Tl-Pb2" id="yuO-bU-DSG"/>
                         <outlet property="labelHue" destination="T2U-dx-3p9" id="XZ0-K6-BeJ"/>
                         <outlet property="slider" destination="H9h-Yt-6MR" id="ydO-nC-ItF"/>
                         <outlet property="switchWhite" destination="pZe-bL-Kyl" id="b8c-n9-pEV"/>
@@ -74,7 +75,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="ColorBar" width="395" height="76"/>
-        <image name="car" width="432" height="178"/>
+        <image name="car" width="784" height="390"/>
+        <image name="hueScale" width="855" height="84"/>
     </resources>
 </document>

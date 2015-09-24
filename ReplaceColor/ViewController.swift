@@ -9,6 +9,7 @@
 import UIKit
 
 class ViewController: UIViewController {
+    @IBOutlet weak var imageViewColorBar: UIImageView!
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var labelHue: UILabel!
     @IBOutlet weak var slider: UISlider!
@@ -169,6 +170,11 @@ class ViewController: UIViewController {
     @IBAction func switchChanged(sender: AnyObject) {
         isMono = !isMono
         switchWhite.on = isMono
+        if isMono {
+            imageViewColorBar.image = UIImage(named: "grayScale")
+        } else {
+            imageViewColorBar.image = UIImage(named: "hueScale")
+        }
         render()
     }
 
