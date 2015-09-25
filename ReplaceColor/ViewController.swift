@@ -14,6 +14,8 @@ class ViewController: UIViewController {
     @IBOutlet weak var labelHue: UILabel!
     @IBOutlet weak var slider: UISlider!
     @IBOutlet weak var switchWhite: UISwitch!
+    let defaultHueAngle: Float = 26.0 //default color of car body (orange)
+    let defaultHueRange: Float = 100.0 //degree range from max to min with defaultHueAngle in middle, typically between 60 - 100 will cover one color fairly well
     var ciImage: CIImage?
 
     override func viewDidLoad() {
@@ -112,13 +114,13 @@ class ViewController: UIViewController {
     }
     
     func render() {
-        let centerHueAngle: Float = 214.0/360.0 //default color of truck body blue
-        let destCenterHueAngle: Float = slider.value
-        let minHueAngle: Float = (214.0 - 60.0/2.0) / 360 //60 degree range = +30 -30
-        let maxHueAngle: Float = (214.0 + 60.0/2.0) / 360
-        var hueAdjustment = centerHueAngle - destCenterHueAngle
+        let centerHueAngle: Float = defaultHueAngle/360.0
+        var destCenterHueAngle: Float = slider.value
+        let minHueAngle: Float = (defaultHueAngle - defaultHueRange/2.0) / 360
+        let maxHueAngle: Float = (defaultHueAngle + defaultHueRange/2.0) / 360
+        let hueAdjustment = centerHueAngle - destCenterHueAngle
         if destCenterHueAngle == 0 && !switchWhite.on {
-            hueAdjustment = 1 //force black if slider angle is 0
+            destCenterHueAngle = 1 //force red if slider angle is 0
         }
         let size = 64
         var cubeData = [Float](count: size * size * size * 4, repeatedValue: 0)
@@ -142,7 +144,7 @@ class ViewController: UIViewController {
                             hsv.s = 0
                             hsv.v = hsv.v - hueAdjustment
                         } else {
-                            hsv.h = destCenterHueAngle == 1 ? 0 : hsv.h - hueAdjustment //force red if slider angle is 360
+                            hsv.h = destCenterHueAngle == 1 ? 0 : hsv.h - hueAdjustment //force red if slider angle is 360 or 0
                         }
                         newRGB = HSVtoRGB(hsv.h, s:hsv.s, v:hsv.v)
                     }
