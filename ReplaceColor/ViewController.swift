@@ -15,7 +15,6 @@ class ViewController: UIViewController {
     @IBOutlet weak var slider: UISlider!
     @IBOutlet weak var switchWhite: UISwitch!
     var ciImage: CIImage?
-    var isMono = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -118,7 +117,7 @@ class ViewController: UIViewController {
         let minHueAngle: Float = (214.0 - 60.0/2.0) / 360 //60 degree range = +30 -30
         let maxHueAngle: Float = (214.0 + 60.0/2.0) / 360
         var hueAdjustment = centerHueAngle - destCenterHueAngle
-        if destCenterHueAngle == 0 && !isMono {
+        if destCenterHueAngle == 0 && !switchWhite.on {
             hueAdjustment = 1 //force black if slider angle is 0
         }
         let size = 64
@@ -139,7 +138,7 @@ class ViewController: UIViewController {
                         newRGB.g = rgb[1]
                         newRGB.b = rgb[2]
                     } else {
-                        if isMono {
+                        if switchWhite.on {
                             hsv.s = 0
                             hsv.v = hsv.v - hueAdjustment
                         } else {
@@ -168,9 +167,7 @@ class ViewController: UIViewController {
     }
     
     @IBAction func switchChanged(sender: AnyObject) {
-        isMono = !isMono
-        switchWhite.on = isMono
-        if isMono {
+        if switchWhite.on {
             imageViewColorBar.image = UIImage(named: "grayScale")
         } else {
             imageViewColorBar.image = UIImage(named: "hueScale")
