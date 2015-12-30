@@ -14,9 +14,9 @@ class ViewController: UIViewController {
     @IBOutlet weak var labelHue: UILabel!
     @IBOutlet weak var slider: UISlider!
     @IBOutlet weak var switchWhite: UISwitch!
-    let defaultHueAngle: Float = 26.0 //default color of car body (orange)
-    let defaultHueRange: Float = 100.0 //degree range from max to min with defaultHueAngle in middle, typically between 60 - 100 will cover one color fairly well
     var ciImage: CIImage?
+    var defaultHue: Float = 205
+    var hueRange: Float = 60
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -114,10 +114,10 @@ class ViewController: UIViewController {
     }
     
     func render() {
-        let centerHueAngle: Float = defaultHueAngle/360.0
+        let centerHueAngle: Float = defaultHue/360.0
         var destCenterHueAngle: Float = slider.value
-        let minHueAngle: Float = (defaultHueAngle - defaultHueRange/2.0) / 360
-        let maxHueAngle: Float = (defaultHueAngle + defaultHueRange/2.0) / 360
+        let minHueAngle: Float = (defaultHue - hueRange/2.0) / 360
+        let maxHueAngle: Float = (defaultHue + hueRange/2.0) / 360
         let hueAdjustment = centerHueAngle - destCenterHueAngle
         if destCenterHueAngle == 0 && !switchWhite.on {
             destCenterHueAngle = 1 //force red if slider angle is 0
@@ -144,7 +144,8 @@ class ViewController: UIViewController {
                             hsv.s = 0
                             hsv.v = hsv.v - hueAdjustment
                         } else {
-                            hsv.h = destCenterHueAngle == 1 ? 0 : hsv.h - hueAdjustment //force red if slider angle is 360 or 0
+                            hsv.h = destCenterHueAngle == 1 ? 0 : hsv.h - hueAdjustment //force red if slider angle is 360
+                            //hsv.h = destCenterHueAngle + (centerHueAngle - hsv.h)
                         }
                         newRGB = HSVtoRGB(hsv.h, s:hsv.s, v:hsv.v)
                     }
