@@ -17,19 +17,19 @@ class ViewController: UIViewController {
     var ciImage: CIImage?
     var defaultHue: Float = 205 //default color of blue truck
     var hueRange: Float = 60 //hue angle that we want to replace
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         ciImage = CIImage(image: imageView.image!)
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         labelHue.text = NSString(format:"%.2lf", slider.value) as String
         render()
     }
     
-    func HSVtoRGB(h : Float, s : Float, v : Float) -> (r : Float, g : Float, b : Float) {
+    func HSVtoRGB(_ h : Float, s : Float, v : Float) -> (r : Float, g : Float, b : Float) {
         var r : Float = 0
         var g : Float = 0
         var b : Float = 0
@@ -67,9 +67,9 @@ class ViewController: UIViewController {
         b += m
         return (r, g, b)
     }
-
     
-    func RGBtoHSV(r : Float, g : Float, b : Float) -> (h : Float, s : Float, v : Float) {
+    
+    func RGBtoHSV(_ r : Float, g : Float, b : Float) -> (h : Float, s : Float, v : Float) {
         var h : CGFloat = 0
         var s : CGFloat = 0
         var v : CGFloat = 0
@@ -78,7 +78,7 @@ class ViewController: UIViewController {
         return (Float(h), Float(s), Float(v))
     }
     
-    @IBAction func sliderChanged(sender: AnyObject) {
+    @IBAction func sliderChanged(_ sender: AnyObject) {
         labelHue.text = NSString(format:"%.2lf", slider.value) as String
         render()
     }
@@ -89,20 +89,20 @@ class ViewController: UIViewController {
         let minHueAngle: Float = (defaultHue - hueRange/2.0) / 360
         let maxHueAngle: Float = (defaultHue + hueRange/2.0) / 360
         let hueAdjustment = centerHueAngle - destCenterHueAngle
-        if destCenterHueAngle == 0 && !switchWhite.on {
+        if destCenterHueAngle == 0 && !switchWhite.isOn {
             destCenterHueAngle = 1 //force red if slider angle is 0
         }
         let size = 64
-        var cubeData = [Float](count: size * size * size * 4, repeatedValue: 0)
+        var cubeData = [Float](repeating: 0, count: size * size * size * 4)
         var rgb: [Float] = [0, 0, 0]
         var hsv: (h : Float, s : Float, v : Float)
         var newRGB: (r : Float, g : Float, b : Float)
         var offset = 0
-        for var z = 0; z < size; z++ {
+        for z in 0 ..< size {
             rgb[2] = Float(z) / Float(size) // blue value
-            for var y = 0; y < size; y++ {
+            for y in 0 ..< size {
                 rgb[1] = Float(y) / Float(size) // green value
-                for var x = 0; x < size; x++ {
+                for x in 0 ..< size {
                     rgb[0] = Float(x) / Float(size) // red value
                     hsv = RGBtoHSV(rgb[0], g: rgb[1], b: rgb[2])
                     if hsv.h < minHueAngle || hsv.h > maxHueAngle {
@@ -110,7 +110,7 @@ class ViewController: UIViewController {
                         newRGB.g = rgb[1]
                         newRGB.b = rgb[2]
                     } else {
-                        if switchWhite.on {
+                        if switchWhite.isOn {
                             hsv.s = 0
                             hsv.v = hsv.v - hueAdjustment
                         } else {
@@ -126,26 +126,26 @@ class ViewController: UIViewController {
                 }
             }
         }
-        let data = NSData(bytes: cubeData, length: cubeData.count * sizeof(Float))
+        let data = Data(bytes: UnsafePointer<UInt8>(cubeData), count: cubeData.count * sizeof(Float.self))
         let colorCube = CIFilter(name: "CIColorCube")!
         colorCube.setValue(size, forKey: "inputCubeDimension")
         colorCube.setValue(data, forKey: "inputCubeData")
         colorCube.setValue(ciImage, forKey: kCIInputImageKey)
         if let outImage = colorCube.outputImage {
             let context = CIContext(options: nil)
-            let outputImageRef = context.createCGImage(outImage, fromRect: outImage.extent)
-            imageView.image = UIImage(CGImage: outputImageRef)
+            let outputImageRef = context.createCGImage(outImage, from: outImage.extent)
+            imageView.image = UIImage(cgImage: outputImageRef!)
         }
     }
     
-    @IBAction func switchChanged(sender: AnyObject) {
-        if switchWhite.on {
+    @IBAction func switchChanged(_ sender: AnyObject) {
+        if switchWhite.isOn {
             imageViewColorBar.image = UIImage(named: "grayScale")
         } else {
             imageViewColorBar.image = UIImage(named: "hueScale")
         }
         render()
     }
-
+    
 }
 
