@@ -126,7 +126,8 @@ class ViewController: UIViewController {
                 }
             }
         }
-        let data = Data(bytes: UnsafePointer<UInt8>(cubeData), count: cubeData.count * sizeof(Float.self))
+        let b = cubeData.withUnsafeBufferPointer { Data(buffer: $0) }
+        let data = b as NSData
         let colorCube = CIFilter(name: "CIColorCube")!
         colorCube.setValue(size, forKey: "inputCubeDimension")
         colorCube.setValue(data, forKey: "inputCubeData")
